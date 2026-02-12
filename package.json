@@ -1,0 +1,33 @@
+{
+  "name": "dt193g-laboration2.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "tsc-alias",
+    "start": "node dist/server.js",
+    "db:init": "tsx install.ts",
+    "genSecretKey": "tsx generateSecretKey.ts"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.2.3",
+    "cpx": "^1.2.1",
+    "prettier": "^3.8.1",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "@fastify/awilix": "^8.2.0",
+    "@fastify/cors": "^11.2.0",
+    "awilix": "^12.1.0",
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.6.2",
+    "dotenv": "^17.2.4",
+    "fastify": "^5.7.4",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
