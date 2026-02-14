@@ -10,6 +10,7 @@
     /* Aliases */
     "baseUrl": "./",
     "paths": {
+      "@utils/*": ["src/utils/*"],
       "@config/*": ["src/config/*"],
       "@models/*": ["src/models/*"],
       "@schemas/*": ["src/schemas/*"],

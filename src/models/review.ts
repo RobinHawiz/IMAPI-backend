@@ -1,0 +1,25 @@
+// Represents a single item entry stored in the database
+export type ReviewEntity = {
+  id: string;
+  userId: string;
+  tmdbMovieId: string;
+  title: string;
+  reviewText: string;
+  rating: number;
+  createdAt: string;
+};
+
+export type reviewResponsePayload = ReviewEntity & {
+  username: string;
+  likes: number;
+};
+
+export type ReviewCreatePayload = Omit<
+  ReviewEntity,
+  "id" | "userId" | "createdAt"
+>;
+
+export type ReviewUpdatePayload = Omit<
+  ReviewEntity,
+  "id" | "userId" | "tmdbMovieId" | "createdAt"
+>;
