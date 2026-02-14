@@ -1,12 +1,12 @@
 import { diContainer } from "@fastify/awilix";
 import { Database } from "better-sqlite3";
-import { UserEntity, UserPayload } from "@models/user.js";
+import { UserEntity, UserInfo, UserPayload } from "@models/user.js";
 
 export interface UserRepository {
   // Verifies a users existence. Returns a user for password verification.
   findByUsername(username: string): UserEntity;
   // Returns one user
-  findOneUser(id: string): UserPayload;
+  findOneUser(id: string): UserInfo;
   // Inserts a user and returns the id
   insertUser(payload: UserPayload): number | bigint;
 }
@@ -38,7 +38,7 @@ export class SQLiteUserRepository implements UserRepository {
            from user
           where id = @id`,
       )
-      .get({ id }) as UserPayload;
+      .get({ id }) as UserInfo;
   }
 
   insertUser(payload: UserPayload) {

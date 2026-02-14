@@ -1,18 +1,18 @@
 import { diContainer } from "@fastify/awilix";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { UserPayload } from "@models/user.js";
+import { UserCredentials, UserPayload } from "@models/user.js";
 import { DomainError } from "@errors/domainError.js";
 import { UserService } from "@services/user.js";
-import jwt from "jsonwebtoken";
+import { decodeTokenPayload } from "@utils/token.js";
 
 export interface UserController {
   /** POST /api/users/login → 200, 400 bad request, 500 internal server error */
   loginUser(
-    request: FastifyRequest<{ Body: UserPayload }>,
+    request: FastifyRequest<{ Body: UserCredentials }>,
     reply: FastifyReply,
   ): void;
   /** GET /api/users/me → 200, 400 bad request, 500 internal server error */
-  getOneUser(request: FastifyRequest, reply: FastifyReply): void;
+  getUser(request: FastifyRequest, reply: FastifyReply): void;
   /** POST /api/users/register → 201, 400 bad request, 500 internal server error */
   insertUser(
     request: FastifyRequest<{ Body: UserPayload }>,
@@ -45,11 +45,10 @@ export class DefaultUserController implements UserController {
     }
   }
 
-  getOneUser(request: FastifyRequest, reply: FastifyReply) {
+  getUser(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const token = request.headers["authorization"]!.split(" ")[1];
-      const { id } = jwt.decode(token) as { id: string };
-      const user = this.service.getOneUser(id);
+      const { id } = decodeTokenPayload<{ id: string }>(request);
+      const user = this.service.getUser(id);
       reply.code(200).send(user);
     } catch (err) {
       if (err instanceof DomainError) {

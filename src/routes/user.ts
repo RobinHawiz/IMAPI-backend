@@ -1,7 +1,7 @@
 import { diContainer } from "@fastify/awilix";
 import { FastifyInstance } from "fastify";
-import { userPayloadSchema } from "@schemas/user.js";
-import { UserPayload } from "@models/user.js";
+import { userCredentialsSchema, userPayloadSchema } from "@schemas/user.js";
+import { UserCredentials, UserPayload } from "@models/user.js";
 import { UserController } from "@controllers/user.js";
 import { authenticateToken } from "@hooks/authenticateToken.js";
 
@@ -18,11 +18,11 @@ export class DefaultUserRoutes implements UserRoutes {
 
   initRoutes(app: FastifyInstance) {
     // Authenticates a user and returns a JWT if successful
-    app.post<{ Body: UserPayload }>(
+    app.post<{ Body: UserCredentials }>(
       "/api/users/login",
       {
         schema: {
-          body: userPayloadSchema,
+          body: userCredentialsSchema,
         },
       },
       (request, reply) => {
@@ -42,7 +42,7 @@ export class DefaultUserRoutes implements UserRoutes {
       },
     );
 
-    // Fetches a user after validating the JWT
+    // Fetches the current user after validating the JWT
     app.get(
       "/api/users/me",
       {
@@ -50,7 +50,7 @@ export class DefaultUserRoutes implements UserRoutes {
           authenticateToken(request, reply, done),
       },
       (request, reply) => {
-        this.controller.getOneUser(request, reply);
+        this.controller.getUser(request, reply);
       },
     );
 

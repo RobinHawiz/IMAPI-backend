@@ -10,3 +10,12 @@ export type UserEntity = {
 export type UserPayload = Omit<UserEntity, "id" | "passwordHash"> & {
   password: string;
 };
+
+export type UserCredentials = Omit<
+  UserEntity,
+  "id" | "firstName" | "lastName" | "passwordHash"
+> & {
+  password: string;
+};
+
+export type UserInfo = Omit<UserEntity, "id" | "passwordHash">;

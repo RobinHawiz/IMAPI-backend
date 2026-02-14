@@ -1,5 +1,5 @@
 import { diContainer } from "@fastify/awilix";
-import { UserPayload } from "@models/user.js";
+import { UserCredentials, UserInfo, UserPayload } from "@models/user.js";
 import { DomainError } from "@errors/domainError.js";
 import { UserRepository } from "@repositories/user.js";
 import bcrypt from "bcrypt";
@@ -12,9 +12,9 @@ export interface UserService {
    * @returns JWT string on successful login.
    * @throws DomainError on failure.
    */
-  loginUser(payload: UserPayload): Promise<string>;
-  // Returns one user or throws DomainError("User not found")
-  getOneUser(id: string): UserPayload;
+  loginUser(payload: UserCredentials): Promise<string>;
+  // Returns the current user or throws DomainError("User not found")
+  getUser(id: string): UserInfo;
   // Inserts and returns a new id
   insertUser(userPayload: UserPayload): Promise<number | bigint>;
 }
@@ -51,7 +51,7 @@ export class DefaultUserService implements UserService {
     return token;
   }
 
-  getOneUser(id: string) {
+  getUser(id: string) {
     const user = this.repo.findOneUser(id);
     if (!user) {
       throw new DomainError(`User not found`);
