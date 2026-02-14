@@ -23,7 +23,7 @@ export class DefaultReviewRoutes implements ReviewRoutes {
   initRoutes(app: FastifyInstance) {
     // Fetches one review by a given id after validating the query parameter
     app.get<{ Params: { reviewId: string } }>(
-      "/api/reviews/:reviewId/me",
+      "/api/reviews/:reviewId",
       {
         schema: {
           params: reviewIdParamSchema,
