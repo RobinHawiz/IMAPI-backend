@@ -4,6 +4,7 @@ import {
   reviewCreatePayloadSchema,
   reviewIdParamSchema,
   reviewUpdatePayloadSchema,
+  tmdbMovieIdParamSchema,
 } from "@schemas/review.js";
 import { ReviewCreatePayload, ReviewUpdatePayload } from "@models/review.js";
 import { ReviewController } from "@controllers/review.js";
@@ -21,6 +22,19 @@ export class DefaultReviewRoutes implements ReviewRoutes {
   }
 
   initRoutes(app: FastifyInstance) {
+    // Fetches the reviews for a specific movie
+    app.get<{ Params: { tmdbMovieId: string } }>(
+      "/api/movies/:tmdbMovieId/reviews",
+      {
+        schema: {
+          params: tmdbMovieIdParamSchema,
+        },
+      },
+      (request, reply) => {
+        this.controller.getMovieReviews(request, reply);
+      },
+    );
+
     // Fetches one review by a given id after validating the query parameter
     app.get<{ Params: { reviewId: string } }>(
       "/api/reviews/:reviewId",

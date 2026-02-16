@@ -6,6 +6,8 @@ import { ReviewService } from "@services/review.js";
 import { decodeTokenPayload } from "@utils/token.js";
 
 export interface ReviewController {
+  /** GET /api/reviews/:movieId → 200, 400 bad request, 500 internal server error */
+  getMovieReviews(request: FastifyRequest, reply: FastifyReply): void;
   /** GET /api/reviews/:reviewId → 200, 400 bad request, 500 internal server error */
   getOneReview(
     request: FastifyRequest<{ Params: { reviewId: string } }>,
@@ -48,6 +50,25 @@ export class DefaultReviewController implements ReviewController {
 
   constructor() {
     this.service = diContainer.resolve("reviewService");
+  }
+
+  getMovieReviews(
+    request: FastifyRequest<{ Params: { tmdbMovieId: string } }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const { tmdbMovieId } = request.params;
+      const reviews = this.service.getMovieReviews(tmdbMovieId);
+      reply.code(200).send(reviews);
+    } catch (err) {
+      if (err instanceof DomainError) {
+        console.error("Error retrieving review data:", err.message);
+        reply.code(400).send({ message: err.message });
+      } else {
+        console.error("Error retrieving review data:", err);
+        reply.code(500).send({ ok: false });
+      }
+    }
   }
 
   getOneReview(

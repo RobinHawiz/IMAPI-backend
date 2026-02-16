@@ -8,6 +8,8 @@ import { DomainError } from "@errors/domainError.js";
 import { ReviewRepository } from "@repositories/review.js";
 
 export interface ReviewService {
+  // Returns the reviews for a movie
+  getMovieReviews(userId: string): Array<reviewResponsePayload>;
   // Returns one review or throws DomainError("Review not found")
   getOneReview(reviewId: string): reviewResponsePayload;
   // Returns the current user reviews or throws DomainError("Reviews not found")
@@ -29,6 +31,10 @@ export class DefaultReviewService implements ReviewService {
 
   constructor() {
     this.repo = diContainer.resolve("reviewRepo");
+  }
+
+  getMovieReviews(tmdbMovieId: string) {
+    return this.repo.findMovieReviews(tmdbMovieId);
   }
 
   getOneReview(reviewId: string) {

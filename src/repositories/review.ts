@@ -5,8 +5,13 @@ import {
   ReviewCreatePayload,
   ReviewUpdatePayload,
 } from "@models/review.js";
+import { MovieRatingStats } from "@models/movie.js";
 
 export interface ReviewRepository {
+  // Returns reviews for a specific movie
+  findMovieReviews(tmdbMovieId: string): Array<reviewResponsePayload>;
+  // Returns the IMAPI rating statistics of a movie
+  findMovieReviewStats(tmdbMovieId: string): MovieRatingStats;
   // Returns one review
   findOneReview(reviewId: string): reviewResponsePayload;
   // Returns the current user reviews
@@ -15,7 +20,7 @@ export interface ReviewRepository {
   insertReview(userId: string, payload: ReviewCreatePayload): number | bigint;
   // Updates an existing review and returns affected rows
   updateReview(reviewId: string, payload: ReviewUpdatePayload): number;
-  // Deletes an review and returns affected rows
+  // Deletes a review and returns affected rows
   deleteReview(reviewId: string): number;
   // Inserts a like for a review and does nothing if it already exists
   insertReviewLike(reviewId: string, userId: string): void;
@@ -28,6 +33,31 @@ export class SQLiteReviewRepository implements ReviewRepository {
 
   constructor() {
     this.db = diContainer.resolve("db");
+  }
+
+  findMovieReviews(tmdbMovieId: string) {
+    return this.db
+      .prepare(
+        `select r.id, r.user_id as userId, r.tmdb_movie_id as tmdbMovieId, r.title, r.review_text as reviewText, r.rating, r.created_at as createdAt, u.username,
+        (select count(*) from review_like as rl where rl.review_id = r.id) as likes
+        from review r
+        join user as u on u.id = r.user_id
+        where r.tmdb_movie_id = @tmdbMovieId
+        order by r.id DESC
+        `,
+      )
+      .all({ tmdbMovieId }) as Array<reviewResponsePayload>;
+  }
+
+  findMovieReviewStats(tmdbMovieId: string) {
+    return this.db
+      .prepare(
+        `select count(*) as reviewCount, round(avg(rating), 1) as averageRating
+        from review
+        where tmdb_movie_id = @tmdbMovieId
+        `,
+      )
+      .get({ tmdbMovieId }) as MovieRatingStats;
   }
 
   findOneReview(reviewId: string) {
@@ -51,7 +81,7 @@ export class SQLiteReviewRepository implements ReviewRepository {
         from review r
         join user as u on u.id = r.user_id
         where r.user_id = @userId
-        order by r.id ASC`,
+        order by r.id DESC`,
       )
       .all({ userId }) as Array<reviewResponsePayload>;
   }
