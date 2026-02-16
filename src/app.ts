@@ -11,6 +11,10 @@ import { SQLiteUserRepository } from "@repositories/index.js";
 import { DefaultReviewController } from "@controllers/review.js";
 import { DefaultReviewService } from "@services/review.js";
 import { SQLiteReviewRepository } from "@repositories/review.js";
+import { DefaultMovieRoutes } from "@routes/movie.js";
+import { DefaultMovieController } from "@controllers/movie.js";
+import { DefaultMovieService } from "@services/movie.js";
+import { DefaultTmdbClient } from "@repositories/movie.js";
 
 // Bootstraps Fastify, registers DI, mounts routes.
 export default async function build() {
@@ -38,14 +42,19 @@ export default async function build() {
     reviewController: awilix.asClass(DefaultReviewController).singleton(),
     reviewService: awilix.asClass(DefaultReviewService).singleton(),
     reviewRepo: awilix.asClass(SQLiteReviewRepository).singleton(),
+    movieController: awilix.asClass(DefaultMovieController).singleton(),
+    movieService: awilix.asClass(DefaultMovieService).singleton(),
+    tmdbClient: awilix.asClass(DefaultTmdbClient).singleton(),
   });
 
   // Mount routes
   const userRoutes = new DefaultUserRoutes();
   const reviewRoutes = new DefaultReviewRoutes();
+  const movieRoutes = new DefaultMovieRoutes();
 
   userRoutes.initRoutes(app);
   reviewRoutes.initRoutes(app);
+  movieRoutes.initRoutes(app);
 
   return app;
 }
