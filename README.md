@@ -51,7 +51,7 @@ Create `.env` in the project root.
 
 ```env
 # Used by src/config/db.ts during runtime
-DATABASE=../../db/sqlite.db
+DATABASE=../db/sqlite.db
 
 # Used by install.ts when initializing DB
 DATABASE_INSTALL_PATH=db/sqlite.db
