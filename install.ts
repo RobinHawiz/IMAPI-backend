@@ -37,7 +37,7 @@ try {
         review_text TEXT NOT NULL,
         rating INTEGER NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES user(id)
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         );`);
 
   // Create table review_like
@@ -46,8 +46,8 @@ try {
   db.exec(`CREATE TABLE review_like(
         user_id INTEGER NOT NULL,
         review_id INTEGER NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES user(id),
-        FOREIGN KEY (review_id) REFERENCES review(id),
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+        FOREIGN KEY (review_id) REFERENCES review(id) ON DELETE CASCADE,
         PRIMARY KEY (user_id, review_id)
         );`);
 
