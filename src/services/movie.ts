@@ -80,8 +80,12 @@ export class DefaultMovieService implements MovieService {
       runtime: movie.runtime,
       // remove genre id's that come from TMDb v3
       genres: movie.genres.map((genre) => genre.name),
-      posterPath: `${this.baseImageUrl}/w780${movie.poster_path}`,
-      backdropPath: `${this.baseImageUrl}/original${movie.backdrop_path}`,
+      posterPath: movie.poster_path
+        ? `${this.baseImageUrl}/w780${movie.poster_path}`
+        : null,
+      backdropPath: movie.backdrop_path
+        ? `${this.baseImageUrl}/original${movie.backdrop_path}`
+        : null,
       averageRating: movieStats.averageRating,
       reviewCount: movieStats.reviewCount,
     };
@@ -94,7 +98,9 @@ export class DefaultMovieService implements MovieService {
         id: movie.id,
         title: movie.title,
         releaseDate: movie.release_date,
-        posterPath: `${this.baseImageUrl}/w500${movie.poster_path}`,
+        posterPath: movie.poster_path
+          ? `${this.baseImageUrl}/w500${movie.poster_path}`
+          : null,
       }),
     );
     const response: MoviePageResponse = {

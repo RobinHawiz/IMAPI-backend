@@ -8,8 +8,8 @@ export type TmdbMovieDetails = {
   genres: Array<{
     name: string;
   }>;
-  poster_path: string;
-  backdrop_path: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
 };
 
 // IMAPI API response for individual movies
@@ -19,8 +19,8 @@ export type MovieDetailsResponse = Omit<
 > & {
   releaseDate: string;
   genres: Array<string>;
-  posterPath: string;
-  backdropPath: string;
+  posterPath: string | null;
+  backdropPath: string | null;
   averageRating: number | null;
   reviewCount: number;
 };
@@ -48,7 +48,7 @@ export type TmdbMoviePageResult = {
   id: number;
   title: string;
   release_date: string;
-  poster_path: string;
+  poster_path: string | null;
 };
 
 // IMAPI API response for movie pages
@@ -67,5 +67,5 @@ export type MoviePageResultResponse = Omit<
   "release_date" | "poster_path"
 > & {
   releaseDate: string;
-  posterPath: string;
+  posterPath: string | null;
 };
