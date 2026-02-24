@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "tsc-alias && cpx db/sqlite.db dist/db",
+    "build-dev": "tsc && tsc-alias",
     "start": "node dist/server.js",
     "db:init": "tsx install.ts",
     "genSecretKey": "tsx generateSecretKey.ts"
