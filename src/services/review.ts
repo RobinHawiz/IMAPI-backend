@@ -1,5 +1,6 @@
 import { diContainer } from "@fastify/awilix";
 import {
+  MovieReviewResponsePayload,
   ReviewCreatePayload,
   reviewResponsePayload,
   ReviewUpdatePayload,
@@ -9,7 +10,10 @@ import { ReviewRepository } from "@repositories/review.js";
 
 export interface ReviewService {
   // Returns the reviews for a movie
-  getMovieReviews(userId: string): Array<reviewResponsePayload>;
+  getMovieReviews(
+    tmdbMovieId: string,
+    userId: string,
+  ): Array<MovieReviewResponsePayload>;
   // Returns one review or throws DomainError("Review not found")
   getOneReview(reviewId: string): reviewResponsePayload;
   // Returns the current user reviews or throws DomainError("Reviews not found")
@@ -33,8 +37,8 @@ export class DefaultReviewService implements ReviewService {
     this.repo = diContainer.resolve("reviewRepo");
   }
 
-  getMovieReviews(tmdbMovieId: string) {
-    return this.repo.findMovieReviews(tmdbMovieId);
+  getMovieReviews(tmdbMovieId: string, userId: string) {
+    return this.repo.findMovieReviews(tmdbMovieId, userId);
   }
 
   getOneReview(reviewId: string) {

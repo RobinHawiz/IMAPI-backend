@@ -4,12 +4,16 @@ import {
   reviewResponsePayload,
   ReviewCreatePayload,
   ReviewUpdatePayload,
+  MovieReviewResponsePayload,
 } from "@models/review.js";
 import { MovieRatingStats } from "@models/movie.js";
 
 export interface ReviewRepository {
   // Returns reviews for a specific movie
-  findMovieReviews(tmdbMovieId: string): Array<reviewResponsePayload>;
+  findMovieReviews(
+    tmdbMovieId: string,
+    currentUserId: string,
+  ): Array<MovieReviewResponsePayload>;
   // Returns the IMAPI rating statistics of a movie
   findMovieReviewStats(tmdbMovieId: string): MovieRatingStats;
   // Returns one review
@@ -35,18 +39,24 @@ export class SQLiteReviewRepository implements ReviewRepository {
     this.db = diContainer.resolve("db");
   }
 
-  findMovieReviews(tmdbMovieId: string) {
+  findMovieReviews(tmdbMovieId: string, currentUserId: string) {
+    const likesSubquery = `(select count(*) from review_like as rl where rl.review_id = r.id) as likes`;
+    const isLikedByUserSubquery = `
+    case when exists 
+    (select * from review_like as rl where rl.review_id = r.id and rl.user_id = @currentUserId) 
+    then 1 else 0 end as likedByMe`;
     return this.db
       .prepare(
         `select r.id, r.user_id as userId, r.tmdb_movie_id as tmdbMovieId, r.title, r.review_text as reviewText, r.rating, r.created_at as createdAt, u.username,
-        (select count(*) from review_like as rl where rl.review_id = r.id) as likes
+        ${likesSubquery},
+        ${currentUserId ? isLikedByUserSubquery : `0 as likedByMe`}
         from review r
         join user as u on u.id = r.user_id
         where r.tmdb_movie_id = @tmdbMovieId
         order by r.id DESC
         `,
       )
-      .all({ tmdbMovieId }) as Array<reviewResponsePayload>;
+      .all({ tmdbMovieId, currentUserId }) as Array<MovieReviewResponsePayload>;
   }
 
   findMovieReviewStats(tmdbMovieId: string) {

@@ -3,7 +3,10 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { ReviewCreatePayload, ReviewUpdatePayload } from "@models/review.js";
 import { DomainError } from "@errors/domainError.js";
 import { ReviewService } from "@services/review.js";
-import { decodeVerifiedTokenPayload } from "@utils/token.js";
+import {
+  decodeUnsafeTokenPayload,
+  decodeVerifiedTokenPayload,
+} from "@utils/token.js";
 
 export interface ReviewController {
   /** GET /api/reviews/:movieId → 200, 400 bad request, 500 internal server error */
@@ -58,7 +61,12 @@ export class DefaultReviewController implements ReviewController {
   ) {
     try {
       const { tmdbMovieId } = request.params;
-      const reviews = this.service.getMovieReviews(tmdbMovieId);
+      const tokenIdParam = decodeUnsafeTokenPayload<{ id: string }>(request);
+      let userId = "";
+      if (tokenIdParam) {
+        userId = tokenIdParam.id;
+      }
+      const reviews = this.service.getMovieReviews(tmdbMovieId, userId);
       reply.code(200).send(reviews);
     } catch (err) {
       if (err instanceof DomainError) {

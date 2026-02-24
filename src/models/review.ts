@@ -14,6 +14,10 @@ export type reviewResponsePayload = ReviewEntity & {
   likes: number;
 };
 
+export type MovieReviewResponsePayload = reviewResponsePayload & {
+  likedByMe: 0 | 1;
+};
+
 export type ReviewCreatePayload = Omit<
   ReviewEntity,
   "id" | "userId" | "createdAt"
