@@ -3,7 +3,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { ReviewCreatePayload, ReviewUpdatePayload } from "@models/review.js";
 import { DomainError } from "@errors/domainError.js";
 import { ReviewService } from "@services/review.js";
-import { decodeTokenPayload } from "@utils/token.js";
+import { decodeVerifiedTokenPayload } from "@utils/token.js";
 
 export interface ReviewController {
   /** GET /api/reviews/:movieId → 200, 400 bad request, 500 internal server error */
@@ -92,7 +92,9 @@ export class DefaultReviewController implements ReviewController {
 
   getUserReviews(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const { id: userId } = decodeTokenPayload<{ id: string }>(request);
+      const { id: userId } = decodeVerifiedTokenPayload<{ id: string }>(
+        request,
+      );
       const reviews = this.service.getUserReviews(userId);
       reply.code(200).send(reviews);
     } catch (err) {
@@ -111,7 +113,9 @@ export class DefaultReviewController implements ReviewController {
     reply: FastifyReply,
   ) {
     try {
-      const { id: userId } = decodeTokenPayload<{ id: string }>(request);
+      const { id: userId } = decodeVerifiedTokenPayload<{ id: string }>(
+        request,
+      );
       const reviewId = this.service.insertReview(userId, request.body);
       reply.code(201).header("Location", `/api/reviews/${reviewId}`).send();
     } catch (err) {
@@ -172,7 +176,9 @@ export class DefaultReviewController implements ReviewController {
     reply: FastifyReply,
   ) {
     try {
-      const { id: userId } = decodeTokenPayload<{ id: string }>(request);
+      const { id: userId } = decodeVerifiedTokenPayload<{ id: string }>(
+        request,
+      );
       const { reviewId } = request.params;
       this.service.insertReviewLike(reviewId, userId);
       reply.code(201).send();
@@ -192,7 +198,9 @@ export class DefaultReviewController implements ReviewController {
     reply: FastifyReply,
   ) {
     try {
-      const { id: userId } = decodeTokenPayload<{ id: string }>(request);
+      const { id: userId } = decodeVerifiedTokenPayload<{ id: string }>(
+        request,
+      );
       const { reviewId } = request.params;
       this.service.deleteReviewLike(reviewId, userId);
       reply.code(204).send();

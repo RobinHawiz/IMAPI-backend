@@ -3,7 +3,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { UserCredentials, UserPayload } from "@models/user.js";
 import { DomainError } from "@errors/domainError.js";
 import { UserService } from "@services/user.js";
-import { decodeTokenPayload } from "@utils/token.js";
+import { decodeVerifiedTokenPayload } from "@utils/token.js";
 
 export interface UserController {
   /** POST /api/users/login → 200, 400 bad request, 500 internal server error */
@@ -47,7 +47,7 @@ export class DefaultUserController implements UserController {
 
   getUser(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const { id } = decodeTokenPayload<{ id: string }>(request);
+      const { id } = decodeVerifiedTokenPayload<{ id: string }>(request);
       const user = this.service.getUser(id);
       reply.code(200).send(user);
     } catch (err) {
