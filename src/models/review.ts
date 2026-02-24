@@ -9,12 +9,12 @@ export type ReviewEntity = {
   createdAt: string;
 };
 
-export type reviewResponsePayload = ReviewEntity & {
+export type ReviewResponsePayload = ReviewEntity & {
   username: string;
   likes: number;
 };
 
-export type MovieReviewResponsePayload = reviewResponsePayload & {
+export type MovieReviewResponsePayload = ReviewResponsePayload & {
   likedByMe: 0 | 1;
 };
 

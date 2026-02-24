@@ -2,7 +2,7 @@ import { diContainer } from "@fastify/awilix";
 import {
   MovieReviewResponsePayload,
   ReviewCreatePayload,
-  reviewResponsePayload,
+  ReviewResponsePayload,
   ReviewUpdatePayload,
 } from "@models/review.js";
 import { DomainError } from "@errors/domainError.js";
@@ -15,9 +15,9 @@ export interface ReviewService {
     userId: string,
   ): Array<MovieReviewResponsePayload>;
   // Returns one review or throws DomainError("Review not found")
-  getOneReview(reviewId: string): reviewResponsePayload;
+  getOneReview(reviewId: string): ReviewResponsePayload;
   // Returns the current user reviews or throws DomainError("Reviews not found")
-  getUserReviews(userId: string): Array<reviewResponsePayload>;
+  getUserReviews(userId: string): Array<ReviewResponsePayload>;
   // Inserts and returns a new id
   insertReview(userId: string, payload: ReviewCreatePayload): number | bigint;
   // Updates if exists. Otherwise throws DomainError("Review not found")

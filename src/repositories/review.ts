@@ -1,7 +1,7 @@
 import { diContainer } from "@fastify/awilix";
 import { Database } from "better-sqlite3";
 import {
-  reviewResponsePayload,
+  ReviewResponsePayload,
   ReviewCreatePayload,
   ReviewUpdatePayload,
   MovieReviewResponsePayload,
@@ -17,9 +17,9 @@ export interface ReviewRepository {
   // Returns the IMAPI rating statistics of a movie
   findMovieReviewStats(tmdbMovieId: string): MovieRatingStats;
   // Returns one review
-  findOneReview(reviewId: string): reviewResponsePayload;
+  findOneReview(reviewId: string): ReviewResponsePayload;
   // Returns the current user reviews
-  findUserReviews(userId: string): Array<reviewResponsePayload>;
+  findUserReviews(userId: string): Array<ReviewResponsePayload>;
   // Inserts an review and returns the id
   insertReview(userId: string, payload: ReviewCreatePayload): number | bigint;
   // Updates an existing review and returns affected rows
@@ -80,7 +80,7 @@ export class SQLiteReviewRepository implements ReviewRepository {
         where r.id = @reviewId
         `,
       )
-      .get({ reviewId }) as reviewResponsePayload;
+      .get({ reviewId }) as ReviewResponsePayload;
   }
 
   findUserReviews(userId: string) {
@@ -93,7 +93,7 @@ export class SQLiteReviewRepository implements ReviewRepository {
         where r.user_id = @userId
         order by r.id DESC`,
       )
-      .all({ userId }) as Array<reviewResponsePayload>;
+      .all({ userId }) as Array<ReviewResponsePayload>;
   }
 
   insertReview(userId: string, payload: ReviewCreatePayload) {
