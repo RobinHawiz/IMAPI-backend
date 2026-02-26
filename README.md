@@ -140,15 +140,16 @@ SQLite tables created by `install.ts`:
 
 ### `review`
 
-| Column          | Type      | Notes                                  |
-| --------------- | --------- | -------------------------------------- |
-| `id`            | INTEGER   | PK, autoincrement                      |
-| `user_id`       | INTEGER   | FK -> `user.id`, `ON DELETE CASCADE`   |
-| `tmdb_movie_id` | TEXT      | required                               |
-| `title`         | TEXT      | required                               |
-| `review_text`   | TEXT      | required                               |
-| `rating`        | INTEGER   | required (validated 1-10 in API layer) |
-| `created_at`    | TIMESTAMP | default `CURRENT_TIMESTAMP`, required  |
+| Column             | Type      | Notes                                  |
+| ------------------ | --------- | -------------------------------------- |
+| `id`               | INTEGER   | PK, autoincrement                      |
+| `user_id`          | INTEGER   | FK -> `user.id`, `ON DELETE CASCADE`   |
+| `tmdb_movie_id`    | TEXT      | required                               |
+| `tmdb_movie_title` | TEXT      | required                               |
+| `title`            | TEXT      | required                               |
+| `review_text`      | TEXT      | required                               |
+| `rating`           | INTEGER   | required (validated 1-10 in API layer) |
+| `created_at`       | TIMESTAMP | default `CURRENT_TIMESTAMP`, required  |
 
 ### `review_like`
 
@@ -176,6 +177,7 @@ Composite primary key: (`user_id`, `review_id`).
 
 - Create body (`POST /api/reviews/me`)
   - `tmdbMovieId`: string, min 1
+  - `tmdbMovieTitle`: string, min 1
   - `title`: string, 1-50
   - `reviewText`: string, 50-1000
   - `rating`: number, 1-10
@@ -213,16 +215,16 @@ Composite primary key: (`user_id`, `review_id`).
 
 ### Reviews
 
-| Method | Route                              | Protected | Description                          | Body / Params                                | Responses                                  |
-| ------ | ---------------------------------- | :-------: | ------------------------------------ | -------------------------------------------- | ------------------------------------------ |
-| GET    | `/api/movies/:tmdbMovieId/reviews` |    No     | Get all reviews for a movie          | `tmdbMovieId`                                | `200` `400` `500`                          |
-| GET    | `/api/reviews/:reviewId`           |    No     | Get single review by id              | `reviewId`                                   | `200` `400` `500`                          |
-| GET    | `/api/reviews/me`                  |    Yes    | Get current user's reviews           | None                                         | `200` `400` `401/403` `500`                |
-| POST   | `/api/reviews/me`                  |    Yes    | Create review for authenticated user | `{ tmdbMovieId, title, reviewText, rating }` | `201` (+ `Location`) `400` `401/403` `500` |
-| PUT    | `/api/reviews/:reviewId/me`        |    Yes    | Update review                        | `reviewId` + `{ title, reviewText, rating }` | `204` `400` `401/403` `500`                |
-| DELETE | `/api/reviews/:reviewId/me`        |    Yes    | Delete review                        | `reviewId`                                   | `204` `400` `401/403` `500`                |
-| POST   | `/api/reviews/:reviewId/like`      |    Yes    | Like a review                        | `reviewId`                                   | `201` `400` `401/403` `500`                |
-| DELETE | `/api/reviews/:reviewId/like`      |    Yes    | Remove like from review              | `reviewId`                                   | `204` `400` `401/403` `500`                |
+| Method | Route                              | Protected | Description                          | Body / Params                                                | Responses                                  |
+| ------ | ---------------------------------- | :-------: | ------------------------------------ | ------------------------------------------------------------ | ------------------------------------------ |
+| GET    | `/api/movies/:tmdbMovieId/reviews` |    No     | Get all reviews for a movie          | `tmdbMovieId`                                                | `200` `400` `500`                          |
+| GET    | `/api/reviews/:reviewId`           |    No     | Get single review by id              | `reviewId`                                                   | `200` `400` `500`                          |
+| GET    | `/api/reviews/me`                  |    Yes    | Get current user's reviews           | None                                                         | `200` `400` `401/403` `500`                |
+| POST   | `/api/reviews/me`                  |    Yes    | Create review for authenticated user | `{ tmdbMovieId, tmdbMovieTitle, title, reviewText, rating }` | `201` (+ `Location`) `400` `401/403` `500` |
+| PUT    | `/api/reviews/:reviewId/me`        |    Yes    | Update review                        | `reviewId` + `{ title, reviewText, rating }`                 | `204` `400` `401/403` `500`                |
+| DELETE | `/api/reviews/:reviewId/me`        |    Yes    | Delete review                        | `reviewId`                                                   | `204` `400` `401/403` `500`                |
+| POST   | `/api/reviews/:reviewId/like`      |    Yes    | Like a review                        | `reviewId`                                                   | `201` `400` `401/403` `500`                |
+| DELETE | `/api/reviews/:reviewId/like`      |    Yes    | Remove like from review              | `reviewId`                                                   | `204` `400` `401/403` `500`                |
 
 ## Error Handling
 
