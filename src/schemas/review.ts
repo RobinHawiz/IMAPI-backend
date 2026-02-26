@@ -34,6 +34,7 @@ export const tmdbMovieIdParamSchema: JSONSchemaType<{ tmdbMovieId: string }> = {
  *
  * Validates the request body to ensure required fields are present and formatted correctly:
  * - `tmdbMovieId`: non-empty string
+ * - `tmdbMovieTitle`: non-empty string
  * - `title`: non-empty string, max 50 characters
  * - `reviewText`: non-empty string, min 50 characters, max 1000 characters
  * - `rating`: positive number between 1 and 10
@@ -42,11 +43,12 @@ export const reviewCreatePayloadSchema: JSONSchemaType<ReviewCreatePayload> = {
   type: "object",
   properties: {
     tmdbMovieId: { type: "string", minLength: 1 },
+    tmdbMovieTitle: { type: "string", minLength: 1 },
     title: { type: "string", maxLength: 50, minLength: 1 },
     reviewText: { type: "string", maxLength: 1000, minLength: 50 },
     rating: { type: "number", minimum: 1, maximum: 10 },
   },
-  required: ["tmdbMovieId", "title", "reviewText", "rating"],
+  required: ["tmdbMovieId", "tmdbMovieTitle", "title", "reviewText", "rating"],
   additionalProperties: false,
 };
 

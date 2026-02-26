@@ -3,6 +3,7 @@ export type ReviewEntity = {
   id: string;
   userId: string;
   tmdbMovieId: string;
+  tmdbMovieTitle: string;
   title: string;
   reviewText: string;
   rating: number;
@@ -25,5 +26,5 @@ export type ReviewCreatePayload = Omit<
 
 export type ReviewUpdatePayload = Omit<
   ReviewEntity,
-  "id" | "userId" | "tmdbMovieId" | "createdAt"
+  "id" | "userId" | "tmdbMovieId" | "tmdbMovieTitle" | "createdAt"
 >;

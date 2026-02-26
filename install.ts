@@ -33,6 +33,7 @@ try {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         tmdb_movie_id TEXT NOT NULL,
+        tmdb_movie_title TEXT NOT NULL,
         title TEXT NOT NULL,
         review_text TEXT NOT NULL,
         rating INTEGER NOT NULL,
