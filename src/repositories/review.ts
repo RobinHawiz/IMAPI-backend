@@ -47,7 +47,7 @@ export class SQLiteReviewRepository implements ReviewRepository {
     then 1 else 0 end as likedByMe`;
     return this.db
       .prepare(
-        `select r.id, r.user_id as userId, r.tmdb_movie_id as tmdbMovieId, r.tmdb_movie_title as tmdbMovieTitle, r.title, r.review_text as reviewText, r.rating, r.created_at as createdAt, u.username,
+        `select cast(r.id as text) as id, cast(r.user_id as text) as userId, r.tmdb_movie_id as tmdbMovieId, r.tmdb_movie_title as tmdbMovieTitle, r.title, r.review_text as reviewText, r.rating, r.created_at as createdAt, u.username,
         ${likesSubquery},
         ${currentUserId ? isLikedByUserSubquery : `0 as likedByMe`}
         from review r
@@ -73,7 +73,7 @@ export class SQLiteReviewRepository implements ReviewRepository {
   findOneReview(reviewId: string) {
     return this.db
       .prepare(
-        `select r.id, r.user_id as userId, r.tmdb_movie_id as tmdbMovieId, r.tmdb_movie_title as tmdbMovieTitle, r.title, r.review_text as reviewText, r.rating, r.created_at as createdAt, u.username,
+        `select cast(r.id as text) as id, cast(r.user_id as text) as userId, r.tmdb_movie_id as tmdbMovieId, r.tmdb_movie_title as tmdbMovieTitle, r.title, r.review_text as reviewText, r.rating, r.created_at as createdAt, u.username,
         (select count(*) from review_like as rl where rl.review_id = r.id) as likes
         from review r
         join user as u on u.id = r.user_id
@@ -86,7 +86,7 @@ export class SQLiteReviewRepository implements ReviewRepository {
   findUserReviews(userId: string) {
     return this.db
       .prepare(
-        `select r.id, r.user_id as userId, r.tmdb_movie_id as tmdbMovieId, r.tmdb_movie_title as tmdbMovieTitle, r.title, r.review_text as reviewText, r.rating, r.created_at as createdAt, u.username, 
+        `select cast(r.id as text) as id, cast(r.user_id as text) as userId, r.tmdb_movie_id as tmdbMovieId, r.tmdb_movie_title as tmdbMovieTitle, r.title, r.review_text as reviewText, r.rating, r.created_at as createdAt, u.username, 
         (select count(*) from review_like as rl where rl.review_id = r.id) as likes
         from review r
         join user as u on u.id = r.user_id
